@@ -16,6 +16,7 @@ export interface Automati {
   ulaz: string
   izlaz: string
   jackpot: string
+  elektronski: boolean
 }
 
 const Obrazac13 = () => {
@@ -65,6 +66,7 @@ const Obrazac13 = () => {
       koeficijent: '',
       ulogBet: '',
       vrstaPrograma: '',
+      elektronski: true,
     },
   ])
 
@@ -99,6 +101,7 @@ const Obrazac13 = () => {
   }, [danDev])
 
   let xmlFile = ''
+  // xmlns = 'urn:Obrazac13PSEB_V1_0.xsd'
   const obrazac13PSEB = `<?xml version="1.0" encoding="Windows-1250" ?>
 <PaketniUvozObrazaca xmlns="urn:PaketniUvozObrazaca_V1_0.xsd">
 <PodaciOPoslodavcu>
@@ -135,7 +138,7 @@ const Obrazac13 = () => {
 <UlazIn>${automati[i].ulaz}</UlazIn>
 <IzlazOut>${automati[i].izlaz}</IzlazOut>
 <Jackpot>${automati[i].jackpot}</Jackpot>
-<Elektronski>true</Elektronski>
+<Elektronski>${automati[i].elektronski}</Elektronski>
 </PodaciOAutomatima>`
 
     xmlFile += podaciOAutomatima
@@ -155,7 +158,9 @@ const Obrazac13 = () => {
 
   xmlFile += ostalo
 
-  const handleDownload = () => {
+  const handleDownload = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
     const element = document.createElement('a')
     const file = new Blob([xmlFile], { type: 'xml' })
     element.href = URL.createObjectURL(file)
@@ -165,8 +170,9 @@ const Obrazac13 = () => {
   }
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>, i: number) => {
     let newFormValues = [...automati]
+    const value = e.target.type === 'checkbox' ? e.target.checked : e.target.value
     // @ts-ignore
-    newFormValues[i][e.target.name] = e.target.value
+    newFormValues[i][e.target.name] = value
     setAutomati(newFormValues)
   }
 
@@ -183,6 +189,7 @@ const Obrazac13 = () => {
         koeficijent: '',
         ulogBet: '',
         vrstaPrograma: '',
+        elektronski: true,
       },
     ])
   }
@@ -193,11 +200,11 @@ const Obrazac13 = () => {
   }
 
   return (
-    <>
-      <section className='mt-2 w-full mb-2'>
+    <form onSubmit={handleDownload}>
+      <section className='w-full mt-2 mb-2'>
         <p className='p-1 font-semibold uppercase bg-slate-300 text-slate-600'>Podaci o poslodavcu</p>
         <div className='flex flex-wrap items-center justify-start w-full'>
-          <TextField text='JIB poslodavca' value={jibPoslodavca} setValue={setJibPoslodavca} />
+          <TextField text='JIB poslodavca' value={jibPoslodavca} setValue={setJibPoslodavca} pattern='[0-9]{13}' />
           <TextField text='Naziv poslodavca' value={nazivPoslodavca} setValue={setNazivPoslodavca} />
           <TextField text='Broj zahtjeva' value={brojZahtjeva} setValue={setBrojZahtjeva} />
           <DateField text='Datum podnošenja' value={datumPodnosenjaDev} setValue={setDatumPodnosenjaDev} />
@@ -206,7 +213,7 @@ const Obrazac13 = () => {
       <section className='w-full mb-6'>
         <p className='p-1 font-semibold uppercase bg-slate-300 text-slate-600'>Podaci o priređivaču</p>
         <div className='flex flex-wrap items-center justify-start w-full'>
-          <TextField text='JIB' value={jibPriredjivaca} setValue={setJibPriredjivaca} />
+          <TextField text='JIB' value={jibPriredjivaca} setValue={setJibPriredjivaca} pattern='[0-9]{13}' />
           <TextField text='Naziv priređivača' value={nazivPriredjivaca} setValue={setNazivPriredjivaca} />
           <TextField text='Šifra opštine' value={sifraOpstine} setValue={setSifraOpstine} />
           <TextField text='Naziv opštine' value={nazivOpstine} setValue={setNazivOpstine} />
@@ -229,12 +236,74 @@ const Obrazac13 = () => {
               <TextFieldDynamic text='Inventurni broj' handleChange={handleChange} ind={ind} name='inventurniBroj' />
               <TextFieldDynamic text='Serijski broj' handleChange={handleChange} ind={ind} name='serijskiBroj' />
               <TextFieldDynamic text='Vrsta programa' handleChange={handleChange} ind={ind} name='vrstaPrograma' />
-              <TextFieldDynamic text='Koeficijent' handleChange={handleChange} ind={ind} name='koeficijent' />
-              <TextFieldDynamic text='Ulog Bet' handleChange={handleChange} ind={ind} name='ulogBet' />
-              <TextFieldDynamic text='Dobitak Win' handleChange={handleChange} ind={ind} name='dobitakWin' />
-              <TextFieldDynamic text='Ulaz in' handleChange={handleChange} ind={ind} name='ulaz' />
-              <TextFieldDynamic text='Izlaz out' handleChange={handleChange} ind={ind} name='izlaz' />
-              <TextFieldDynamic text='Jackpot' handleChange={handleChange} ind={ind} name='jackpot' />
+              <TextFieldDynamic
+                text='Koeficijent'
+                handleChange={handleChange}
+                ind={ind}
+                name='koeficijent'
+                step='.01'
+                type='number'
+                pattern='^\d*(\.\d{0,2})?$'
+              />
+              <TextFieldDynamic
+                text='Ulog Bet'
+                handleChange={handleChange}
+                ind={ind}
+                name='ulogBet'
+                step='.01'
+                type='number'
+                pattern='^\d*(\.\d{0,2})?$'
+              />
+              <TextFieldDynamic
+                text='Dobitak Win'
+                handleChange={handleChange}
+                ind={ind}
+                name='dobitakWin'
+                step='.01'
+                type='number'
+                pattern='^\d*(\.\d{0,2})?$'
+              />
+              <TextFieldDynamic
+                text='Ulaz in'
+                handleChange={handleChange}
+                ind={ind}
+                name='ulaz'
+                step='.01'
+                type='number'
+                pattern='^\d*(\.\d{0,2})?$'
+              />
+              <TextFieldDynamic
+                text='Izlaz out'
+                handleChange={handleChange}
+                ind={ind}
+                name='izlaz'
+                step='.01'
+                type='number'
+                pattern='^\d*(\.\d{0,2})?$'
+              />
+              <TextFieldDynamic
+                text='Jackpot'
+                handleChange={handleChange}
+                ind={ind}
+                name='jackpot'
+                step='.01'
+                type='number'
+                pattern='^\d*(\.\d{0,2})?$'
+              />
+              <div className='w-60'>
+                <div className='flex p-2 space-x-4'>
+                  <label className='font-semibold'>Elektronski</label>
+                  <div className='flex justify-start gap-4'>
+                    <input
+                      name='elektronski'
+                      type='checkbox'
+                      onChange={(e) => handleChange(e, ind)}
+                      checked={automati[ind].elektronski}
+                      // className='w-full px-1 py-1 text-gray-700 border rounded border-slate-500 bg-gray-50 focus:outline-none focus:bg-white focus:drop-shadow-lg focus:shadow-cyan-100'
+                    />
+                  </div>
+                </div>
+              </div>
               <div className='flex flex-wrap w-60'>
                 {ind ? <ButtonRemove ind={ind} removeField={removeField} /> : null}
                 <ButtonAdd addField={addField} />
@@ -246,18 +315,58 @@ const Obrazac13 = () => {
       <section className='w-full mb-6'>
         <p className='p-1 font-semibold uppercase bg-slate-300 text-slate-600'>Podaci ukupno</p>
         <div className='flex flex-wrap items-center justify-start w-full'>
-          <TextField text='Koeficijent' value={koeficijent} setValue={setKoeficijent} />
-          <TextField text='Ulog Bet' value={ulog} setValue={setUlog} />
-          <TextField text='Dobitak Win' value={dobitak} setValue={setDobitak} />
-          <TextField text='Ulaz in' value={ulaz} setValue={setUlaz} />
-          <TextField text='Izlaz out' value={izlaz} setValue={setIzlaz} />
-          <TextField text='Jackpot' value={razlika} setValue={setRazlika} />
+          <TextField
+            text='Koeficijent'
+            value={koeficijent}
+            setValue={setKoeficijent}
+            step='.01'
+            type='number'
+            pattern='^\d*(\.\d{0,2})?$'
+          />
+          <TextField
+            text='Ulog Bet'
+            value={ulog}
+            setValue={setUlog}
+            step='.01'
+            type='number'
+            pattern='^\d*(\.\d{0,2})?$'
+          />
+          <TextField
+            text='Dobitak Win'
+            value={dobitak}
+            setValue={setDobitak}
+            step='.01'
+            type='number'
+            pattern='^\d*(\.\d{0,2})?$'
+          />
+          <TextField
+            text='Ulaz in'
+            value={ulaz}
+            setValue={setUlaz}
+            step='.01'
+            type='number'
+            pattern='^\d*(\.\d{0,2})?$'
+          />
+          <TextField
+            text='Izlaz out'
+            value={izlaz}
+            setValue={setIzlaz}
+            step='.01'
+            type='number'
+            pattern='^\d*(\.\d{0,2})?$'
+          />
+          <TextField
+            text='Jackpot'
+            value={razlika}
+            setValue={setRazlika}
+            step='.01'
+            type='number'
+            pattern='^\d*(\.\d{0,2})?$'
+          />
         </div>
       </section>
-      <button onClick={handleDownload} className='bg-sky-700 w-full px-4 py-2 rounded hover:bg-sky-600 text-sky-100'>
-        Preuzmi XML
-      </button>
-    </>
+      <button className='w-full px-4 py-2 rounded bg-sky-700 hover:bg-sky-600 text-sky-100'>Preuzmi XML</button>
+    </form>
   )
 }
 

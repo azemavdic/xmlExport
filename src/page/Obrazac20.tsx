@@ -5,6 +5,7 @@ import TextField from '../components/TextField'
 import ButtonRemove from '../components/ButtonRemove'
 import ButtonAdd from '../components/ButtonAdd'
 import TextFieldDynamic from '../components/TextFieldDynamic'
+import SelectField from '../components/SelectField'
 
 export interface Kazino {
   jibKazina: string
@@ -41,7 +42,7 @@ const Obrazac20 = () => {
   const [sifraDjelatnosti, setSifraDjelatnosti] = useState<string>('')
   const [nazivDjelatnosti, setNazivDjelatnosti] = useState<string>('')
   const [iznosNaknadeUkupno, setIznosNaknadeUkupno] = useState<string>('')
-  const [operacija, setOperacija] = useState<string>('')
+  const [operacija, setOperacija] = useState<string>('Prijava_od_strane_poreznog_obveznika')
   const [datumPrijema, setDatumPrijema] = useState<string>(
     format(new Date(currentDate.getFullYear(), currentDate.getMonth(), 1), 'yyyy-MM-dd')
   )
@@ -178,7 +179,7 @@ const Obrazac20 = () => {
 
   return (
     <>
-      <section className='mt-2 w-full mb-2'>
+      <section className='w-full mt-2 mb-2'>
         <p className='p-1 font-semibold uppercase bg-slate-300 text-slate-600'>Podaci o poslodavcu</p>
         <div className='flex flex-wrap items-center justify-start w-full'>
           <TextField text='JIB poslodavca' value={jibPoslodavca} setValue={setJibPoslodavca} />
@@ -227,7 +228,7 @@ const Obrazac20 = () => {
       <section className='w-full mb-6'>
         <p className='p-1 font-semibold uppercase bg-slate-300 text-slate-600'>Dokument</p>
         <div className='flex flex-wrap items-center justify-start w-full'>
-          <TextField text='Operacija' value={operacija} setValue={setOperacija} />
+          <SelectField text='Operacija' value={operacija} setValue={setOperacija} />
           <DateField text='Datum prijema' value={datumPrijemaDev} setValue={setDatumPrijemaDev} />
         </div>
       </section>
@@ -240,7 +241,7 @@ const Obrazac20 = () => {
           <TextField text='Mjesto' value={mjesto} setValue={setMjesto} />
         </div>
       </section>
-      <button onClick={handleDownload} className='bg-sky-700 w-full px-4 py-2 rounded hover:bg-sky-600 text-sky-100'>
+      <button onClick={handleDownload} className='w-full px-4 py-2 rounded bg-sky-700 hover:bg-sky-600 text-sky-100'>
         Preuzmi XML
       </button>
     </>

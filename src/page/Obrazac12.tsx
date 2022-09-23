@@ -172,7 +172,7 @@ const Obrazac12 = () => {
 
   return (
     <>
-      <section className='mt-2 w-full mb-2'>
+      <section className='w-full mt-2 mb-2'>
         <p className='p-1 font-semibold uppercase bg-slate-300 text-slate-600'>Podaci o poslodavcu</p>
         <div className='flex flex-wrap items-center justify-start w-full'>
           <TextField text='JIB poslodavca' value={jibPoslodavca} setValue={setJibPoslodavca} />
@@ -233,7 +233,7 @@ const Obrazac12 = () => {
           <TextField text='Razlika' value={razlika} setValue={setRazlika} />
         </div>
       </section>
-      <button onClick={handleDownload} className='bg-sky-700 w-full px-4 py-2 rounded hover:bg-sky-600 text-sky-100'>
+      <button onClick={handleDownload} className='w-full px-4 py-2 rounded bg-sky-700 hover:bg-sky-600 text-sky-100'>
         Preuzmi XML
       </button>
     </>
