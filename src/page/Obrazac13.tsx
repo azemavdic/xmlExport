@@ -357,8 +357,8 @@ const Obrazac13 = () => {
           />
           <TextField
             text='Jackpot'
-            value={razlika}
-            setValue={setRazlika}
+            value={jackpot}
+            setValue={setJackpot}
             step='.01'
             type='number'
             pattern='^\d*(\.\d{0,2})?$'
